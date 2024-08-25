@@ -1,6 +1,6 @@
 // 1. Recuperar la información de todos los productos (products)
 
-// const Api = 'https://fakestoreapi.com/products'
+const Api = 'https://fakestoreapi.com/products'
 
 // async function todos(Api) {
 //     try{
@@ -67,4 +67,43 @@ async function addNewProduct() {
     }
 }
 
-addNewProduct()
+//addNewProduct()
+
+//! Punto 4
+async function retornaProducto(id){
+    try{
+        const respuesta = await fetch(Api + '/' + id)
+
+        if(!respuesta.ok){
+            throw new Error('Error', respuesta.status);
+        }
+
+        const datos = await respuesta.json();
+
+        console.log(datos)
+    }catch(error){
+        console.log(error)
+    }
+}
+//retornaProducto(1)
+
+//! Punto 5
+const urlApi5 = 'https://fakestoreapi.com/products/1'
+
+async function eliminarProducto(){
+    try{
+        const respuesta = await fetch(urlApi5, {
+            method:"DELETE"
+        })
+
+        if(!respuesta.ok){
+            throw new Error('Error', respuesta.status);
+        }
+        const datos = await respuesta.json();
+
+        console.log(datos)
+    }catch(error){
+        console.log(error)
+    }
+}
+eliminarProducto()
