@@ -50,7 +50,7 @@ async function guardarpunto2(filename, data) {
     }
 }
 
-// 4.a. Funsión para mostrar personajes de la familia Stark 
+// 4.a. Función para mostrar personajes de la familia Stark 
 async function mostrarPersonajesStark(filename) {
     try {
         const data = await fs.readFile(filename, 'utf8');
@@ -100,7 +100,7 @@ async function mostrarTodosLosPersonajes(filename) {
     }
 }
 
-// 4.c. Función para eliminar personajes mayores a 25
+// 4.c. Función para eliminar personajes con ID mayores a 25
 async function eliminarPersonajesIDMayorA25() {
     try {
         // Leer el archivo JSON existente
