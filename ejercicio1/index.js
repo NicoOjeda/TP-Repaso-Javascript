@@ -41,7 +41,7 @@ async function getPersonajes() {
 }
 
 // 3. Función para guardar datos en json
-async function guardarpunto2(filename, data) {
+async function guardarJson(filename, data) {
     try {
         await fs.writeFile(filename, JSON.stringify(data, null, 2));
         console.log(`3. Datos guardados en ${filename} con éxito`);
@@ -125,7 +125,7 @@ async function main() {
     const personajes = await getPersonajes(); // 2.
     console.log('2. Todos los personajes obtenidos de la API:', personajes); // 2.
 
-    await guardarpunto2(path, personajes); // 3.
+    await guardarJson(path, personajes); // 3.
 
     await mostrarPersonajesStark(path); // 4.a. 
 
