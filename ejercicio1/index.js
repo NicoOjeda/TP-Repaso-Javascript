@@ -6,7 +6,7 @@ function readPersonajes() {
     try {
         return JSON.parse(fs.readFileSync('./personajes.json', 'utf-8'));
     }catch (error) {
-        console.log(error)
+        console.log('Error al leer el archivo JSON', error);
     }
 }
 
@@ -15,12 +15,12 @@ async function getDatos(endpoint) {
     try {
         const response = await fetch(urlBase + endpoint);
         if (!response.ok) {
-            throw new Error("Error", response.status);
+            throw new Error('Error al obtener datos de la API', response.status)
         }
         const json = await response.json();
         return json;
     } catch (error) {
-        console.log(error);
+        console.log('Error al realizar la solicitud HTTP', error);
     }
 }
 
@@ -32,7 +32,7 @@ async function getNedStark() {
         console.log(nedStark);
         return nedStark;
     } catch (error) {
-        console.log(error);
+        console.log('Error al obtener la información de Ned Stark', error);
     }
 }
 
@@ -40,11 +40,10 @@ async function getNedStark() {
 async function getTodosLosPersonajes() {
     try {
         const personajes = await getDatos("Characters");
-        console.log('2) Personajes disponibles: ');
-        console.log(personajes);
+        console.log('2) Todos los personajes recuperados con éxito');
         return personajes;
     } catch (error) {
-        console.log(error);
+        console.log('Error al obtener todos los personajes', error);
     }
 }
 
@@ -54,55 +53,64 @@ async function savePersonajes(personajes) {
         fs.writeFileSync('./personajes.json', JSON.stringify(personajes, null, 2));
         console.log('3) Personajes guardados con éxito');
     } catch (error) {
-        console.log(error);
+        console.log('Error al guardar los personajes en el archivo JSON', error);
     }
 }
 
 //4a.
 async function getHouseStark() {
-    const personajes = readPersonajes();
-    const houseStark = personajes.filter(obj => obj.family === "House Stark");
-    console.log('4a) Personajes de la familia Stark:');
-    console.log(houseStark);
+    try {
+        const personajes = readPersonajes();
+        if (!personajes) throw new Error("No se pudieron leer los personajes");
+        const houseStark = personajes.filter(obj => obj.family === "House Stark");
+        console.log('4a) Personajes de la familia Stark:');
+        console.log(houseStark);
+    } catch (error) {
+        console.log("Error al obtener personajes de la familia Stark:", error);
+    }
 }
 
 //4b.
 async function addNewPerson() {
-    const personajes = readPersonajes();
-    const newPers = {
-        id: 53,
-        firstName: "Alex",
-        lastName: "Code",
-        fullName: "House Code",
-        title: "Senior Programmer",
-        family: "Techies",
-        image: "alex-code.jpg",
-        imageUrl: "https://png.pngtree.com/png-vector/20230728/ourlarge/pngtree-programmer-clipart-developer-sitting-behind-his-computer-in-glasses-cartoon-vector-png-image_6815441.png"
-    };
-
-    personajes.push(newPers);
     try {
+        const personajes = readPersonajes();
+        if (!personajes) throw new Error("No se pudieron leer los personajes.");
+        const newPers = {
+            id: 53,
+            firstName: "Alex",
+            lastName: "Code",
+            fullName: "House Code",
+            title: "Senior Programmer",
+            family: "Techies",
+            image: "alex-code.jpg",
+            imageUrl: "https://png.pngtree.com/png-vector/20230728/ourlarge/pngtree-programmer-clipart-developer-sitting-behind-his-computer-in-glasses-cartoon-vector-png-image_6815441.png"
+        };
+        
+        personajes.push(newPers);
         fs.writeFileSync('./personajes.json', JSON.stringify(personajes, null, 2));
         console.log("4b) Personaje agregado con éxito");
         const updatedData = readPersonajes();
         console.log('Contenido actualizado del archivo JSON:');
         console.log(updatedData);
     } catch (error) {
-        console.log(error);
+        console.log('Error al agregar un nuevo personaje', error);
     }
 }
 
 //4c.
 async function deleteMayores() {
-    const personajes = readPersonajes();
-    const getPerFilter = personajes.filter(obj => obj.id < 26);
+    try{
+        const personajes = readPersonajes();
+        if (!personajes) throw new Error("No se pudieron leer los personajes");
+        const getPerFilter = personajes.filter(obj => obj.id < 26);
 
-    try {
         fs.writeFileSync('./personajes.json', JSON.stringify(getPerFilter, null, 2));
         console.log("4c) Personajes con ID mayor a 25 eliminados con éxito");
-        console.log(readPersonajes());
+        const updatedData = readPersonajes();
+        console.log('Contenido actualizado del archivo JSON:');
+        console.log(updatedData);
     } catch (error) {
-        console.log(error);
+        console.log('Error al eliminar personejes con ID mayor a 25', error);
     }
 }
 
