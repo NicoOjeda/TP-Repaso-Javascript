@@ -93,7 +93,7 @@ async function deleteMayores() {
     } 
 }
 
-async function main() {
+async function mainx() {
      try {
         const nedStark = await getNedStark();
         if (nedStark) {
@@ -118,6 +118,32 @@ async function main() {
     } catch (error) {
         console.log(error);
     }
+}
+
+async function main() {
+    try {
+       const nedStark = await getNedStark();
+       if (nedStark) {
+           console.log('1) Información de Ned Stark:');
+           console.log(nedStark);
+       }
+       const personajes = await getTodosLosPersonajes();
+       if (personajes) {
+           console.log('2) Personajes disponibles: ');
+           console.log(personajes);
+           await savePersonajes(personajes);
+           console.log('3) Personajes guardados con exito:');
+           //Punto 4a
+           //await getHouseStark();
+           //Punto 4b
+           //await addNewPerson(personajes);
+           //Punto 4c
+           //await deleteMayores();
+           
+       }
+   } catch (error) {
+       console.log(error);
+   }
 }
 
 main();
