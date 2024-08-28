@@ -1,142 +1,121 @@
-const fs = require('fs').promises;
-const path = './personajes.json'; // Ruta del archivo JSON
-const urlApi = 'https://thronesapi.com/api/v2/characters';
+const fs = require("fs");
 
-// 1. Función para ver información de Ned Stark
+const urlBase = "https://thronesapi.com/api/v2/";
+
+async function getDatos(endpoint) {
+    try {
+        const response = await fetch(urlBase + endpoint);
+        if (!response.ok) {
+            throw new Error("Error", response.status);
+        }
+
+        const json = await response.json();
+        return json;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function getTodosLosPersonajes() {
+    try {
+        const personajes = await getDatos("Characters"); 
+        return personajes;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 async function getNedStark() {
     try {
-        const response = await fetch(urlApi);
-        if (!response.ok) throw new Error('Error en la solicitud');
-        const characters = await response.json();
-
-        const nedStark = characters.find(character => character.fullName === 'Ned Stark');
-
-        if (nedStark) {
-            console.log('1. Información de Ned Stark:', nedStark);
-        } else {
-            console.log('Ned Stark no fue encontrado.');
-        }
+        const nedStark = await getDatos("Characters/6"); 
+        return nedStark;
     } catch (error) {
-        console.error('Hubo un problema con la solicitud fetch:', error);
+        console.log(error);
     }
 }
 
-// 2. Función para ver todos los personajes de la API
-async function getPersonajes() {
+async function saveData(json) {
     try {
-        const response = await fetch(urlApi);
-        if (!response.ok) throw new Error('Error en la solicitud');
-        const characters = await response.json();
+        fs.writeFileSync('./archivo.json', JSON.stringify(json, null, 2))
+    } catch (error){
+    console.log(error);
+    }
+}
 
-        if (Array.isArray(characters)) {
-            return characters;
-        } else {
-            console.error('El formato de los datos no es el esperado.');
-            return [];
-        }
+async function getHouseStark() {
+    const read = fs.readFileSync('./archivo.json', 'utf-8')
+    const personajes = JSON.parse(read)
+    const houseStark = personajes.filter(obj => obj.family == "House Stark")
+    console.log('4)a) Personajes de la familia Stark')
+    console.log(houseStark)
+}
+
+async function addNewPerson(personajes) {
+
+    const newPers = {
+        "id": 53,
+        "firstName": "Alex",
+        "lastName": "Code",
+        "fullName": "House Code",
+        "title": "Senior Programmer",
+        "family": "Techies",
+        "image": "alex-code.jpg",
+        "imageUrl": "https://png.pngtree.com/png-vector/20230728/ourlarge/pngtree-programmer-clipart-developer-sitting-behind-his-computer-in-glasses-cartoon-vector-png-image_6815441.png"
+    }
+
+    personajes.push(newPers)
+    try {
+        fs.writeFileSync('./archivo.json', JSON.stringify(personajes, null, 2))
+        console.log("4)b) Personaje agregado con éxito");
+        const updatedData = fs.readFileSync('./archivo.json', 'utf8');
+        console.log('Contenido actualizado del archivo JSON:');
+        console.log(updatedData);
     } catch (error) {
-        console.error('Hubo un problema con la solicitud fetch:', error);
-        return [];
-    }
+        console.log(error);
+    } 
 }
 
-// 3. Función para guardar datos en json
-async function guardarJson(filename, data) {
+
+async function delite() {
+    const read = fs.readFileSync('./archivo.json', 'utf-8')
+    const personajes = JSON.parse(read)
+    const getPerFilter = personajes.filter(obj => obj.id < 26)
+
     try {
-        await fs.writeFile(filename, JSON.stringify(data, null, 2));
-        console.log(`3. Datos guardados en ${filename} con éxito`);
-    } catch (err) {
-        console.error('Error al guardar el archivo:', err);
-    }
+        fs.writeFileSync('./archivo.json', JSON.stringify(getPerFilter, null, 2))
+        console.log("4)c) Personajes con ID mayor a 25 eliminados con éxito")
+    } catch (error) {
+        console.log(error)
+    } 
 }
 
-// 4.a. Función para mostrar personajes de la familia Stark 
-async function mostrarPersonajesStark(filename) {
-    try {
-        const data = await fs.readFile(filename, 'utf8');
-        const personajes = JSON.parse(data);
-        const starkPersonajes = personajes.filter(character => character.family === 'House Stark');
-
-        if (starkPersonajes.length > 0) {
-            console.log('4.a. Personajes de la familia Stark:', starkPersonajes);
-        } else {
-            console.log('No se encontraron personajes de la familia Stark.');
-        }
-    } catch (err) {
-        console.error('Error al procesar el archivo:', err);
-    }
-}
-
-// 4.b. Función para agregar un nuevo personaje al json
-async function agregarNuevoPersonaje(nuevoPersonaje) {
-    try {
-        const data = await fs.readFile(path, 'utf8');
-        const personajes = JSON.parse(data);
-
-        personajes.push(nuevoPersonaje);
-
-        await fs.writeFile(path, JSON.stringify(personajes, null, 2));
-        console.log('4.b. Nuevo personaje agregado con éxito.');
-    } catch (err) {
-        console.error('Error al agregar el nuevo personaje:', err);
-    }
-}
-
-// Ejemplo de uso para agregar un nuevo personaje
-const nuevoPersonaje = {
-    id: 53,
-    fullName: 'Dragon',
-    family: 'House Dragon',
-    title: 'No vi la serie XD'
-}
-
-async function mostrarTodosLosPersonajes(filename) {
-    try {
-        const data = await fs.readFile(filename, 'utf8');
-        const personajes = JSON.parse(data);
-        console.log('4.b. Contenido actual del archivo:', personajes);
-    } catch (err) {
-        console.error('Error al leer el archivo:', err);
-    }
-}
-
-// 4.c. Función para eliminar personajes con ID mayores a 25
-async function eliminarPersonajesIDMayorA25() {
-    try {
-        // Leer el archivo JSON existente
-        const data = await fs.readFile(path, 'utf8');
-        const personajes = JSON.parse(data);
-
-        // Filtrar los personajes cuyo ID sea menor o igual a 25
-        const personajesFiltrados = personajes.filter(character => character.id <= 25);
-
-        // Escribir el array filtrado en el archivo
-        await fs.writeFile(path, JSON.stringify(personajesFiltrados, null, 2));
-        console.log('4.c. Personajes eliminados con éxito.');
-    } catch (err) {
-        console.error('Error al eliminar personajes:', err);
-    }
-}
-
-// Función para imprimir por consola en orden de ejercicios
+//ULTIMO
 async function main() {
-    await getNedStark(); // 1.
-
-    const personajes = await getPersonajes(); // 2.
-    console.log('2. Todos los personajes obtenidos de la API:', personajes); // 2.
-
-    await guardarJson(path, personajes); // 3.
-
-    await mostrarPersonajesStark(path); // 4.a. 
-
-    await agregarNuevoPersonaje(nuevoPersonaje); // 4.b.
-    await mostrarTodosLosPersonajes(path);
-
-    await eliminarPersonajesIDMayorA25(); // 4. c.
-    const archivoFiltrado = await fs.readFile(path, 'utf8');
-    console.log('4.c Contenido despues del borrado:', JSON.parse(archivoFiltrado));
+     try {
+        const nedStark = await getNedStark();
+        if (nedStark) {
+            console.log('1) Datos de Ned Stark:');
+            console.log(nedStark);
+        }
+        const personajes = await getTodosLosPersonajes();
+        if (personajes) {
+            console.log('2) Todos los personajes recuperados con éxito');
+            await saveData(personajes);
+            console.log('3) Se ha creado el json con éxito');
+            const updatedData = fs.readFileSync('./archivo.json', 'utf8');
+            console.log('Contenido actualizado del archivo JSON (después de agregar el nuevo personaje):');
+            console.log(updatedData);
+            await getHouseStark();
+            await addNewPerson(personajes);
+            await delite();
+            const finalData = fs.readFileSync('./archivo.json', 'utf8');
+            console.log('Contenido final del archivo JSON:');
+            console.log(finalData);
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-
-// Ejecutar la función principal
 main();
+
