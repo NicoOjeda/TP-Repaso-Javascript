@@ -98,33 +98,6 @@ async function deleteMayores() {
     } 
 }
 
-async function mainx() {
-     try {
-        const nedStark = await getNedStark();
-        if (nedStark) {
-            console.log('1) Información de Ned Stark:');
-            console.log(nedStark);
-        }
-        const personajes = await getTodosLosPersonajes();
-        if (personajes) {
-            console.log('2) Personajes disponibles:');
-            await savePersonajes(personajes);
-            console.log('3) Personajes guardados con exito:');
-            await getHouseStark();
-            await addNewPerson(personajes);
-            await deleteMayores();
-            const updatedData = readPersonajes();
-            console.log('Contenido actualizado del archivo JSON (después de agregar el nuevo personaje):');
-            console.log(updatedData);
-            const finalData = readPersonajes();
-            console.log('Contenido final del archivo JSON:');
-            console.log(finalData);
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 async function main() {
     try {
         //Punto 1
