@@ -23,6 +23,8 @@ async function getDatos(endpoint) {
 async function getTodosLosPersonajes() {
     try {
         const personajes = await getDatos("Characters"); 
+        console.log('2) Personajes disponibles: ');
+        console.log(personajes);
         return personajes;
     } catch (error) {
         console.log(error);
@@ -32,6 +34,8 @@ async function getTodosLosPersonajes() {
 async function getNedStark() {
     try {
         const nedStark = await getDatos("Characters/6"); 
+        console.log('1) Información de Ned Stark:');
+        console.log(nedStark);
         return nedStark;
     } catch (error) {
         console.log(error);
@@ -41,6 +45,7 @@ async function getNedStark() {
 async function savePersonajes(json) {
     try {
         fs.writeFileSync('./personajes.json', JSON.stringify(json, null, 2))
+        console.log('3) Personajes guardados con exito:');
     } catch (error){
     console.log(error);
     }
@@ -50,7 +55,7 @@ async function getHouseStark() {
     //Filtra los personajes de la familia stark
     const personajes = readPersonajes()
     const houseStark = personajes.filter(obj => obj.family == "House Stark")
-    console.log('4)a) Personajes de la familia Stark')
+    console.log('4a) Personajes de la familia Stark')
     console.log(houseStark)
 }
 
@@ -70,7 +75,7 @@ async function addNewPerson(personajes) {
     personajes.push(newPers)
     try {
         fs.writeFileSync('./personajes.json', JSON.stringify(personajes, null, 2))
-        console.log("4)b) Personaje agregado con éxito");
+        console.log("4b) Personaje agregado con éxito");
         const updatedData = readPersonajes();
         console.log('Contenido actualizado del archivo JSON:');
         console.log(updatedData);
@@ -87,7 +92,7 @@ async function deleteMayores() {
 
     try {
         fs.writeFileSync('./personajes.json', JSON.stringify(getPerFilter, null, 2))
-        console.log("4)c) Personajes con ID mayor a 25 eliminados con éxito")
+        console.log("4c) Personajes con ID mayor a 25 eliminados con éxito")
     } catch (error) {
         console.log(error)
     } 
@@ -122,23 +127,19 @@ async function mainx() {
 
 async function main() {
     try {
-       const nedStark = await getNedStark();
-       if (nedStark) {
-           console.log('1) Información de Ned Stark:');
-           console.log(nedStark);
-       }
+        //Punto 1
+       await getNedStark();
+       //Punto 2
        const personajes = await getTodosLosPersonajes();
        if (personajes) {
-           console.log('2) Personajes disponibles: ');
-           console.log(personajes);
+           //Punto 3
            await savePersonajes(personajes);
-           console.log('3) Personajes guardados con exito:');
            //Punto 4a
-           //await getHouseStark();
+           await getHouseStark();
            //Punto 4b
-           //await addNewPerson(personajes);
+           await addNewPerson(personajes);
            //Punto 4c
-           //await deleteMayores();
+           await deleteMayores();
            
        }
    } catch (error) {
