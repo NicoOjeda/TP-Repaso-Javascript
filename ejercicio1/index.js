@@ -47,6 +47,7 @@ async function savePersonajes(json) {
 }
 
 async function getHouseStark() {
+    //Filtra los personajes de la familia stark
     const personajes = readPersonajes()
     const houseStark = personajes.filter(obj => obj.family == "House Stark")
     console.log('4)a) Personajes de la familia Stark')
@@ -54,7 +55,7 @@ async function getHouseStark() {
 }
 
 async function addNewPerson(personajes) {
-
+    //Agrega un nuevo personaje 
     const newPers = {
         "id": 53,
         "firstName": "Alex",
@@ -80,6 +81,7 @@ async function addNewPerson(personajes) {
 
 
 async function deleteMayores() {
+    //Elimina personajes con id mayor a 25
     const personajes = readPersonajes()
     const getPerFilter = personajes.filter(obj => obj.id < 26)
 
@@ -91,25 +93,24 @@ async function deleteMayores() {
     } 
 }
 
-//ULTIMO
 async function main() {
      try {
         const nedStark = await getNedStark();
         if (nedStark) {
-            console.log('1) Datos de Ned Stark:');
+            console.log('1) Información de Ned Stark:');
             console.log(nedStark);
         }
         const personajes = await getTodosLosPersonajes();
         if (personajes) {
-            console.log('2) Todos los personajes recuperados con éxito');
+            console.log('2) Personajes disponibles:');
             await savePersonajes(personajes);
-            console.log('3) Se ha creado el json con éxito');
-            const updatedData = readPersonajes();
-            console.log('Contenido actualizado del archivo JSON (después de agregar el nuevo personaje):');
-            console.log(updatedData);
+            console.log('3) Personajes guardados con exito:');
             await getHouseStark();
             await addNewPerson(personajes);
             await deleteMayores();
+            const updatedData = readPersonajes();
+            console.log('Contenido actualizado del archivo JSON (después de agregar el nuevo personaje):');
+            console.log(updatedData);
             const finalData = readPersonajes();
             console.log('Contenido final del archivo JSON:');
             console.log(finalData);
