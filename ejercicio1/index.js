@@ -2,6 +2,10 @@ const fs = require("fs");
 
 const urlBase = "https://thronesapi.com/api/v2/";
 
+function readPersonajes() {
+    return JSON.parse(fs.readFileSync('./personajes.json', 'utf-8'))
+}
+
 async function getDatos(endpoint) {
     try {
         const response = await fetch(urlBase + endpoint);
@@ -34,17 +38,16 @@ async function getNedStark() {
     }
 }
 
-async function saveData(json) {
+async function savePersonajes(json) {
     try {
-        fs.writeFileSync('./archivo.json', JSON.stringify(json, null, 2))
+        fs.writeFileSync('./personajes.json', JSON.stringify(json, null, 2))
     } catch (error){
     console.log(error);
     }
 }
 
 async function getHouseStark() {
-    const read = fs.readFileSync('./archivo.json', 'utf-8')
-    const personajes = JSON.parse(read)
+    const personajes = readPersonajes()
     const houseStark = personajes.filter(obj => obj.family == "House Stark")
     console.log('4)a) Personajes de la familia Stark')
     console.log(houseStark)
@@ -65,9 +68,9 @@ async function addNewPerson(personajes) {
 
     personajes.push(newPers)
     try {
-        fs.writeFileSync('./archivo.json', JSON.stringify(personajes, null, 2))
+        fs.writeFileSync('./personajes.json', JSON.stringify(personajes, null, 2))
         console.log("4)b) Personaje agregado con éxito");
-        const updatedData = fs.readFileSync('./archivo.json', 'utf8');
+        const updatedData = readPersonajes();
         console.log('Contenido actualizado del archivo JSON:');
         console.log(updatedData);
     } catch (error) {
@@ -77,12 +80,11 @@ async function addNewPerson(personajes) {
 
 
 async function delite() {
-    const read = fs.readFileSync('./archivo.json', 'utf-8')
-    const personajes = JSON.parse(read)
+    const personajes = readPersonajes()
     const getPerFilter = personajes.filter(obj => obj.id < 26)
 
     try {
-        fs.writeFileSync('./archivo.json', JSON.stringify(getPerFilter, null, 2))
+        fs.writeFileSync('./personajes.json', JSON.stringify(getPerFilter, null, 2))
         console.log("4)c) Personajes con ID mayor a 25 eliminados con éxito")
     } catch (error) {
         console.log(error)
@@ -100,15 +102,15 @@ async function main() {
         const personajes = await getTodosLosPersonajes();
         if (personajes) {
             console.log('2) Todos los personajes recuperados con éxito');
-            await saveData(personajes);
+            await savePersonajes(personajes);
             console.log('3) Se ha creado el json con éxito');
-            const updatedData = fs.readFileSync('./archivo.json', 'utf8');
+            const updatedData = readPersonajes();
             console.log('Contenido actualizado del archivo JSON (después de agregar el nuevo personaje):');
             console.log(updatedData);
             await getHouseStark();
             await addNewPerson(personajes);
             await delite();
-            const finalData = fs.readFileSync('./archivo.json', 'utf8');
+            const finalData = readPersonajes();
             console.log('Contenido final del archivo JSON:');
             console.log(finalData);
         }
