@@ -79,7 +79,7 @@ async function addNewPerson(personajes) {
 }
 
 
-async function delite() {
+async function deleteMayores() {
     const personajes = readPersonajes()
     const getPerFilter = personajes.filter(obj => obj.id < 26)
 
@@ -109,7 +109,7 @@ async function main() {
             console.log(updatedData);
             await getHouseStark();
             await addNewPerson(personajes);
-            await delite();
+            await deleteMayores();
             const finalData = readPersonajes();
             console.log('Contenido final del archivo JSON:');
             console.log(finalData);
