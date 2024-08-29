@@ -1,3 +1,12 @@
+## Integrantes: 
+- Maria Derkacheva
+- Artem Derkachev
+- Nicolas Ojeda
+- Maria Valentina Bonanno
+- Juan Nahuel Espinola Grativol
+- Maria Alejandra Ruggiero
+
+   
 # TP-Repaso-Javascript
 
 Ejercicio 1
