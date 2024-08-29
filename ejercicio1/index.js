@@ -30,7 +30,6 @@ async function getNedStark() {
         const nedStark = await getDatos("Characters/6");
         console.log('1) Información de Ned Stark:');
         console.log(nedStark);
-        return nedStark;
     } catch (error) {
         console.log('Error al obtener la información de Ned Stark', error);
     }
